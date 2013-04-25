@@ -16,3 +16,5 @@ Collate:
     'util.r'
     'kernel_weights.r'
     'knn_weights.r'
+    'cvxclust_ama.r'
+    'cvxclust_path_ama.r'
