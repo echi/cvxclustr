@@ -1,0 +1,19 @@
+Package: cvxclustr
+Maintainer: Eric C. Chi <eric.c.chi@gmail.com>
+Author: Eric C. Chi <eric.c.chi@gmail.com>
+Version: 0.0.1
+License: GPL-3
+Title: Splitting methods for convex clustering
+Description: AMA and ADMM splitting methods for convex clustering.
+Suggests:
+    testthat,
+    roxygen2
+Collate:
+    'cvxclustr-package.r'
+    'prox.r'
+    'cvxclust_admm.r'
+    'cvxclust_admm_acc.r'
+    'cvxclust_path_admm.r'
+    'util.r'
+    'kernel_weights.r'
+    'knn_weights.r'
