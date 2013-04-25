@@ -5,4 +5,4 @@ problem.
 
 ## Remarks
 
-Details on the algorithms are in [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499).
+Details on the algorithms are in the paper [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499) by Chi and Lange.
