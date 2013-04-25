@@ -38,7 +38,7 @@ q = 2
 X = matrix(rnorm(n*q),q,p)
 
 # Pick some weights and a sequence of regularization parameters.
-w = kernel_weights(X,1.5)
+w = kernel_weights(X,3)
 gamma =c()
 gamma[1] = 0
 gamma[2] = 1.01

@@ -1,5 +1,4 @@
 export(cvxclust_admm)
-export(cvxclust_admm_acc)
 export(cvxclust_path_admm)
 export(kernel_weights)
 export(knn_weights)

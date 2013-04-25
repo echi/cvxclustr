@@ -3,7 +3,8 @@
 \title{Convex Clustering via ADMM}
 \usage{
   cvxclust_admm(X, Lambda, V, ix, w, gamma, nu = 1,
-    type = 2, max_iter = 100, tol = 1e-04)
+    type = 2, max_iter = 100, tol = 1e-04,
+    accelerate = TRUE)
 }
 \arguments{
   \item{X}{q-by-p data matrix}
@@ -27,6 +28,9 @@
   \item{max_iter}{maximum number of iterations}
 
   \item{tol}{convergence tolerance}
+
+  \item{accelerate}{boolean indicating whether to use
+  acceleration}
 }
 \description{
   \code{cvxclust_admm} performs convex clustering via ADMM.

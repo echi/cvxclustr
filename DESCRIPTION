@@ -12,7 +12,6 @@ Collate:
     'cvxclustr-package.r'
     'prox.r'
     'cvxclust_admm.r'
-    'cvxclust_admm_acc.r'
     'cvxclust_path_admm.r'
     'util.r'
     'kernel_weights.r'
