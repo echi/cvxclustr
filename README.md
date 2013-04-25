@@ -3,4 +3,6 @@
 The R package `cvxclustr` implements two variable splitting methods (ADMM and AMA) for solving a convex formulation of the clustering
 problem.
 
-## Package development tools
+## Remarks
+
+Details on the algorithms are in [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499).
