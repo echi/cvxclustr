@@ -1,7 +1,7 @@
 Package: cvxclustr
 Maintainer: Eric C. Chi <ecchi@ucla.edu>
 Author: Eric C. Chi <ecchi@ucla.edu>
-Version: 0.0.1
+Version: 0.1.0
 License: CC BY-NC-SA 3.0
 Title: Splitting methods for convex clustering
 Description: Alternating Minimization Algorithm (AMA) and Alternating Direction
