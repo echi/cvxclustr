@@ -11,8 +11,8 @@
   the features, and the columns are the samples.}
 
   \item{w}{A vector of nonnegative weights. The ith entry
-  w[i] denotes the weight used between the ith pair of
-  centroids. The weights are in dictionary order.}
+  \code{w[i]} denotes the weight used between the ith pair
+  of centroids. The weights are in dictionary order.}
 
   \item{gamma}{A sequence of regularization parameters.}
 
@@ -84,6 +84,9 @@ data_plot = ggplot(data=df.paths,aes(x=x,y=y))
 data_plot = data_plot + geom_path(aes(group=group),colour='grey60',alpha=0.5)
 data_plot = data_plot + geom_point(data=data.frame(x=X[1,],y=X[2,]),aes(x=x,y=y))
 data_plot + theme_bw()
+}
+\author{
+  Eric C. Chi
 }
 \seealso{
   \code{\link{cvxclust_path_admm}} for estimating the

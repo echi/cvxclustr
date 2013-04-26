@@ -55,4 +55,7 @@
   number of features} \item{k is the number non-zero
   weights.} }
 }
+\author{
+  Eric C. Chi
+}
 

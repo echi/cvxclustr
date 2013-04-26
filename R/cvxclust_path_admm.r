@@ -3,7 +3,7 @@
 #' \code{cvxclust_path_admm} estimates the convex clustering path via ADMM.
 #' 
 #' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
-#' @param w A vector of nonnegative weights. The ith entry w[i] denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
+#' @param w A vector of nonnegative weights. The ith entry \code{w[i]} denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
 #' @param gamma A sequence of regularization parameters.
 #' @param nu A positive penalty parameter for quadratic deviation term.
 #' @param tol The convergence tolerance.
@@ -11,6 +11,7 @@
 #' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
 #' @export
+#' @author Eric C. Chi
 #' @seealso \code{\link{cvxclust_path_ama}} for estimating the clustering path with AMA. \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples
 #' ## Create a small set of points to cluster.

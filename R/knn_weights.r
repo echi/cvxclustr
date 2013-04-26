@@ -1,11 +1,15 @@
-#' Compute k-nearest neighbor weights
+#' "Thin" a weight vector to be positive only for its k-nearest neighbors
 #' 
-#' \code{kernel_weights} computes knn weights
+#' \code{knn_weights} takes a weight vector \code{w} and sets the ith 
+#' component \code{w[i]} to zero if either of the two corresponding nodes
+#' is not among the other's \code{k} nearest neighbors.
 #' 
-#' @param X q-by-p data matrix
-#' @param k number of nearest neighbors
-#' @param p number of data points.
+#' @param w A vector of nonnegative weights. The ith entry \code{w[i]} denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
+#' @param k The number of nearest neighbors
+#' @param p The number of data points.
+#' @author Eric C. Chi
 #' @export
+#' @return A vector \cite{w} of weights for convex clustering.
 knn_weights = function(w,k,p) {
   i = 1
   neighbors = tri2vec(i,(i+1):p,p)

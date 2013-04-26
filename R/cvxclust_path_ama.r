@@ -8,7 +8,7 @@
 #' Additional speed up can be had by employing backtracking. Both speed-ups are employed by default.
 #' 
 #' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
-#' @param w A vector of nonnegative weights. The ith entry w[i] denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
+#' @param w A vector of nonnegative weights. The ith entry \code{w[i]} denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
 #' @param gamma A sequence of regularization parameters.
 #' @param nu The initial step size parameter when backtracking is applied. Otherwise it is a fixed step size in which case there are no guarantees of convergence if it exceeds \code{2/ncol(X)}.
 #' @param tol The convergence tolerance.
@@ -17,6 +17,7 @@
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
 #' @param backtracking If \code{TRUE} (the default), backtracking is used.
 #' @export
+#' @author Eric C. Chi
 #' @seealso \code{\link{cvxclust_path_admm}} for estimating the clustering path with ADMM. \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples
 #' ## Create a small set of points to cluster.

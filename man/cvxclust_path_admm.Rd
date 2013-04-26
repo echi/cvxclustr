@@ -10,8 +10,8 @@
   the features, and the columns are the samples.}
 
   \item{w}{A vector of nonnegative weights. The ith entry
-  w[i] denotes the weight used between the ith pair of
-  centroids. The weights are in dictionary order.}
+  \code{w[i]} denotes the weight used between the ith pair
+  of centroids. The weights are in dictionary order.}
 
   \item{gamma}{A sequence of regularization parameters.}
 
@@ -120,6 +120,9 @@ data_plot = data_plot + geom_path(aes(group=group),colour='grey60',alpha=0.5)
 data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y,colour=Species,shape=Species))
 data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 data_plot + theme_bw()
+}
+\author{
+  Eric C. Chi
 }
 \seealso{
   \code{\link{cvxclust_path_ama}} for estimating the

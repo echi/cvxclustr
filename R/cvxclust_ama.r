@@ -25,6 +25,7 @@
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
 #' @param backtracking If \code{TRUE} (the default), acceleration is turned on.
 #' @export
+#' @author Eric C. Chi
 #' @useDynLib cvxclustr
 cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu,eta=2,type=2,max_iter=1e2,tol=1e-4,
                         accelerate=TRUE, backtracking=TRUE) {

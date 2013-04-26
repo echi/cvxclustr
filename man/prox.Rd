@@ -20,4 +20,7 @@ set.seed(12345)
 x = rnorm(10)
 prox(x,1)
 }
+\author{
+  Eric C. Chi
+}
 
