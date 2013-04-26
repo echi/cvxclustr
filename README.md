@@ -10,6 +10,7 @@ This R package provides two variable splitting methods
 
 for solving this convex formulation of the clustering problem. We seek the centroids $u_i$
 that minimize
+
 $\frac{1}{2} \sum_i || x_i - u_i||_2^2 + \gamma \sum_l w_{l} ||u_{l1} - u_{l2} ||$
 
 Two penalty norms are currently supported: 1-norm and 2-norm.
