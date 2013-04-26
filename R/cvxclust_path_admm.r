@@ -116,7 +116,8 @@ cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-4,max_iter=1e4,type=2,accele
   list_V = vector(mode="list",length=nGamma)
   list_Lambda = vector(mode="list",length=nGamma)
   ix = vec2tri(1:nK,p)  
-  
+  print("gamma    its | primal res      dual res      max res     ")
+  print("---------------------------------------------------------")    
   for (ig in 1:nGamma) {
     gam = gamma[ig]
     cc = cvxclust_admm(X,Lambda,V,ix,w,gam,nu=nu,type=type,max_iter=max_iter,tol=tol,accelerate=accelerate)
@@ -125,9 +126,12 @@ cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-4,max_iter=1e4,type=2,accele
     list_U[[ig]] = cc$U
     list_V[[ig]] = V
     list_Lambda[[ig]] = Lambda 
-    print(paste0("gamma: ",ig,"| itn: ", cc$iter,"| primal: ", signif(cc$primal[cc$iter],4),
-                     "| dual: ", signif(cc$dual[cc$iter],4),
-                     "| max: ", signif(max(cc$primal[cc$iter],cc$dual[cc$iter]),4)))
+    print(sprintf("%5d  %5d | %5f        %5f      %7f", ig, cc$iter, signif(cc$primal[cc$iter],4),
+                  signif(cc$dual[cc$iter],4),
+                  signif(max(cc$primal[cc$iter],cc$dual[cc$iter]),4)))    
+#    print(paste0("gamma: ",ig,"| itn: ", cc$iter,"| primal: ", signif(cc$primal[cc$iter],4),
+#                     "| dual: ", signif(cc$dual[cc$iter],4),
+#                     "| max: ", signif(max(cc$primal[cc$iter],cc$dual[cc$iter]),4)))
     #    if (norm(cc$V,'1')==0) {
     #      print('Single cluster')
     #      break

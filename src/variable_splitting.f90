@@ -269,11 +269,12 @@ contains
   subroutine project(vector_in,n,vector_out,tau,type)
 !
 ! This function is a wrapper for performing various projection mappings.
+! Note that the types are chosen to complement the order of the prox calls.
 !
 ! Menu of types:
-!  type = 1 : L1
+!  type = 1 : L-infinity
 !  type = 2 : L2
-!  type = 3 : L-infinity
+!  type = 3 : L1
 !
   implicit none
   integer :: n, type
@@ -281,11 +282,11 @@ contains
 
   select case(type)
     case(1)
-       call proj_L1(vector_in,n,vector_out,tau)
+       call proj_Linf(vector_in,n,vector_out,tau)
     case(2)
        call proj_L2(vector_in,n,vector_out,tau)
     case(3)
-       call proj_Linf(vector_in,n,vector_out,tau)
+       call proj_L1(vector_in,n,vector_out,tau)
     end select
 
   end subroutine project
@@ -521,7 +522,6 @@ contains
        z = U(:,i) - U(:,j) - (one/nu)*Lambda(:,kk)
        call prox(z,q,V(:,kk),w(kk)*gamma/nu,type)
     end do
-    
   end subroutine update_V
   
   subroutine update_Lambda(Lambda,U,nu,gamma,ix,q,p,nK,w,type)
@@ -634,8 +634,8 @@ subroutine convex_cluster_ama_fista(X,Lambda,U,V,q,p,nK,ix,w,gamma,nu,eta,s1,s2,
      primal(iter) = fp
      call loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,fd)
      dual(iter) = fd
-!     if (fp-fd < tol*(one+half*(fp+fd))) exit
-     if (fp-fd < tol) exit
+     if (fp-fd < tol*(one+half*(fp+fd))) exit
+!     if (fp-fd < tol) exit
   end do
   call update_V(U,Lambda,V,w,gamma,nu,ix,q,p,nK,type)
 end subroutine convex_cluster_ama_fista

@@ -20,7 +20,6 @@
 #' @param tol convergence tolerance
 #' @param accelerate boolean indicating whether to use acceleration
 #' @useDynLib cvxclustr
-#' @export
 cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu,eta=2,type=2,max_iter=1e2,tol=1e-4,accelerate=TRUE) {
   q = as.integer(nrow(X))
   p = as.integer(ncol(X))

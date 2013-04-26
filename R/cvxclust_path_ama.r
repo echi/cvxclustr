@@ -71,6 +71,8 @@ cvxclust_path_ama = function(X, w, gamma,nu0=10,tol=1e-4,max_iter=1e6,type=2,acc
   s1 = edge_info$s1
   s2 = edge_info$s2
   iter_vec = integer(nGamma)
+  print("gamma    its | primal obj       dual obj        gap      ")
+  print("---------------------------------------------------------")  
   for (ig in 1:nGamma) {
     gam = gamma[ig]
     cc = cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=1e4,tol=tol,type=type,accelerate=accelerate)
@@ -80,9 +82,13 @@ cvxclust_path_ama = function(X, w, gamma,nu0=10,tol=1e-4,max_iter=1e6,type=2,acc
     list_U[[ig]] = cc$U
     list_V[[ig]] = cc$V
     list_Lambda[[ig]] = Lambda 
-    print(paste0("gamma: ",ig,"| itn: ", cc$iter,"| primal: ", signif(cc$primal[cc$iter],4),
-                 "| dual: ", signif(cc$dual[cc$iter],4),
-                 "| gap: ", signif(cc$primal[cc$iter]-cc$dual[cc$iter],4)))
+    print(sprintf("%5d  %5d | %5f        %5f      %7f", ig, cc$iter, signif(cc$primal[cc$iter],4),
+                  signif(cc$dual[cc$iter],4),
+                  signif(cc$primal[cc$iter]-cc$dual[cc$iter],4)))
+#    "12345__12345|_12345________12345______1234567"    
+#    print(paste0("gamma: ",ig,"| itn: ", cc$iter,"| primal: ", signif(cc$primal[cc$iter],4),
+#                 "| dual: ", signif(cc$dual[cc$iter],4),
+#                 "| gap: ", signif(cc$primal[cc$iter]-cc$dual[cc$iter],4)))
     #        if (norm(cc$V,'1')==0) {
     #          print('Single cluster')
     #          break
