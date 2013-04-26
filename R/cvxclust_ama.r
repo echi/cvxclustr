@@ -9,21 +9,28 @@
 #' }
 #' 
 #' @param X The q-by-p data matrix whose columns are to be clustered.
-#' @param Lambda The q-by-k matrix of Lagrange multipliers
-#' @param ix The k-by-2 matrix of index pairs
-#' @param M1 Index set used to track nonzero weights
-#' @param M2 Index set used to track nonzero weights
-#' @param s1 Index set used to track nonzero weights
-#' @param s2 Index set used to track nonzero weights
-#' @param w A vector of k positive weights
-#' @param gamma The regularization parameter controlling the amount of shrinkage
+#' @param Lambda The q-by-k matrix of Lagrange multipliers.
+#' @param ix The k-by-2 matrix of index pairs.
+#' @param M1 Index set used to track nonzero weights.
+#' @param M2 Index set used to track nonzero weights.
+#' @param s1 Index set used to track nonzero weights.
+#' @param s2 Index set used to track nonzero weights.
+#' @param w A vector of k positive weights.
+#' @param gamma The regularization parameter controlling the amount of shrinkage.
 #' @param nu The initial step size parameter when backtracking is applied. Otherwise it is a fixed step size in which case there are no guarantees of convergence if it exceeds \code{2/ncol(X)}.
-#' @param eta The step decrement factor
+#' @param eta The factor by which to divide \code{nu} in backtracking.
 #' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
 #' @param max_iter The maximum number of iterations.
 #' @param tol The convergence tolerance.
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
 #' @param backtracking If \code{TRUE} (the default), acceleration is turned on.
+#' @return \code{U} A list of centroid matrices.
+#' @return \code{V} A list of centroid difference matrices.
+#' @return \code{Lambda} A list of Lagrange multiplier matrices.
+#' @return \code{nu} The final step size used.
+#' @return \code{primal} The primal objective evaluated at the final iterate.
+#' @return \code{dual} The dual objective evaluated at the final iterate.
+#' @return \code{iter} The number of iterations taken.
 #' @export
 #' @author Eric C. Chi
 #' @useDynLib cvxclustr
@@ -59,9 +66,9 @@ cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu,eta=2,type=2,max_iter
     if (backtracking) 
       fxname = 'convex_cluster_ama_fista_backtrack'
   } else {
-    fxname = 'convex_cluster_ama_backtrack'
+    fxname = 'convex_cluster_ama'
     if (backtracking)    
-      fxname = 'convex_cluster_ama'
+      fxname = 'convex_cluster_ama_backtrack'
   }  
   sol = .Fortran(fxname,X=X,Lambda=Lambda,U=U,V=V,q=q,p=p,nK=nK,ix=ix,w=w,gamma=gamma,nu=nu,
                  eta=eta,s1=s1,s2=s2,M1=M1,M2=M2,mix1=mix1,mix2=mix2,primal=primal,dual=dual,

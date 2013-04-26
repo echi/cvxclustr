@@ -2,7 +2,7 @@
 \alias{cvxclust_path_ama}
 \title{Convex Clustering Path via AMA}
 \usage{
-  cvxclust_path_ama(X, w, gamma, nu = 10, tol = 1e-04,
+  cvxclust_path_ama(X, w, gamma, nu = 1, tol = 0.001,
     max_iter = 10000, type = 2, accelerate = TRUE,
     backtracking = TRUE)
 }
@@ -34,6 +34,13 @@
   \item{backtracking}{If \code{TRUE} (the default),
   backtracking is used.}
 }
+\value{
+  \code{U} A list of centroid matrices.
+
+  \code{V} A list of centroid difference matrices.
+
+  \code{Lambda} A list of Lagrange multiplier matrices.
+}
 \description{
   \code{cvxclust_path_ama} estimates the convex clustering
   path via the Alternating Minimization Algorithm. Required
@@ -47,42 +54,44 @@
   Both speed-ups are employed by default.
 }
 \examples{
-## Create a small set of points to cluster.
-set.seed(12345)
-p = 10
-q = 2
-X = matrix(rnorm(p*q),q,p)
+## Clusterpaths for Mammal Dentition
+data(mammals)
+X = as.matrix(mammals[,-1])
+X = t(scale(X,center=TRUE,scale=FALSE))
+p = ncol(X)
 
 ## Pick some weights and a sequence of regularization parameters.
-w = kernel_weights(X,2)
-gamma = c()
-gamma[1] = 0
-gamma[2] = 1.01
-i = 3
-repeat {
-  g = 1.05*gamma[i-1]
-  if (g > 50) break
-  gamma[i] = g
-  i = i + 1
-}
-nGamma = i-1
-gamma = gamma[1:nGamma]
+k = 5
+phi = 0.5
+w = kernel_weights(X,phi)
+w = knn_weights(w,k,p)
+gamma = seq(0.0,43, length.out=100)
 
 ## Perform clustering
-sol = cvxclust_path_ama(X,w,gamma)
+sol = cvxclust_path_ama(X,w,gamma,nu=10)
 
 ## Plot the cluster path
 library(ggplot2)
+svdX = svd(X)
+pc = svdX$u[,1:2,drop=FALSE]
+pc.df = as.data.frame(t(pc)\%*\%X)
+nGamma = sol$nGamma
 df.paths = data.frame(x=c(),y=c(), group=c())
 for (j in 1:nGamma) {
-  x = sol$U[[j]][1,]
-  y = sol$U[[j]][2,]
-  df = data.frame(x=x, y=y, group=1:p)
+  pcs = t(pc)\%*\%sol$U[[j]]
+  x = pcs[1,]
+  y = pcs[2,]
+  df = data.frame(x=pcs[1,], y=pcs[2,], group=1:p)
   df.paths = rbind(df.paths,df)
 }
+X_data = as.data.frame(t(X)\%*\%pc)
+colnames(X_data) = c("x","y")
+X_data$Name = mammals[,1]
 data_plot = ggplot(data=df.paths,aes(x=x,y=y))
-data_plot = data_plot + geom_path(aes(group=group),colour='grey60',alpha=0.5)
-data_plot = data_plot + geom_point(data=data.frame(x=X[1,],y=X[2,]),aes(x=x,y=y))
+data_plot = data_plot + geom_path(aes(group=group),colour='grey30',alpha=0.5)
+data_plot = data_plot + geom_text(data=X_data,aes(x=x,y=y,label=Name), position=position_jitter(h=0.125,w=0.125))
+data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y),size=1.5)
+data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 data_plot + theme_bw()
 }
 \author{

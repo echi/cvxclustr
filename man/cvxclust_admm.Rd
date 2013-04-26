@@ -10,16 +10,16 @@
   \item{X}{The q-by-p data matrix whose columns are to be
   clustered.}
 
-  \item{Lambda}{The q-by-k matrix of Lagrange multipliers}
+  \item{Lambda}{The q-by-k matrix of Lagrange multipliers.}
 
-  \item{V}{The q-by-k matrix of centroid differences}
+  \item{V}{The q-by-k matrix of centroid differences.}
 
-  \item{ix}{The k-by-2 matrix of index pairs}
+  \item{ix}{The k-by-2 matrix of index pairs.}
 
-  \item{w}{The vector of k positive weights}
+  \item{w}{The vector of k positive weights.}
 
   \item{gamma}{The regularization parameter controlling the
-  amount of shrinkage}
+  amount of shrinkage.}
 
   \item{nu}{A positive penalty parameter for quadratic
   deviation term.}

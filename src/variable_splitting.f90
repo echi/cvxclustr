@@ -479,7 +479,7 @@ contains
        if (s2(ii) > 0) then
           L2 = sum(Lambda(:,M2(1:s2(ii),ii)),2)
        end if
-       first_term = first_term + norm(L1-L2,2)**2
+       first_term = first_term + sum( (L1-L2)**2 )
     end do
     second_term = zero
     do ii=1,nK
@@ -583,8 +583,11 @@ subroutine convex_cluster_ama_backtrack(X,Lambda,U,V,q,p,nK,ix,w,gamma,nu,eta,s1
         Lambda = Lambda_old
         call update_Lambda(Lambda,U,nu,gamma,ix,q,p,nK,w,type)
         Ld = Lambda - Lambda_old
-        qloss = sum(Ld*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(Ld**2) - f_last
+!        qloss = sum(Ld*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(Ld**2) - f_last
+        qloss = -(half/nu)*sum(Ld**2) - f_last
         call loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,f)
+!        if ( (half/nu)*sum(Ld**2) + f_last-f .le. zero) then
+!        print *, -qloss, f
         if (qloss+f.ge.zero) then
            exit
         end if
@@ -650,7 +653,7 @@ mix1,mix2,primal,dual,max_iter,iter,tol,type)
   real(kind=dble_prec) :: Lambda(q,nK), U(q,p), V(q,nK), X(q,p), w(nK)
   real(kind=dble_prec) :: eta, gamma, nu
   real(kind=dble_prec) :: primal(max_iter), dual(max_iter), tol
-  real(kind=dble_prec) :: Lambda_old(q,nK), Ld(q,nK)
+  real(kind=dble_prec) :: Lambda_old(q,nK), G(q,nK)
   real(kind=dble_prec) :: f, f_last, fp, fd, qloss
   real(kind=dble_prec) :: alpha, alpha_old, S_old(q,nK), S(q,nK)
 
@@ -663,8 +666,8 @@ mix1,mix2,primal,dual,max_iter,iter,tol,type)
      do
         Lambda = Lambda_old
         call update_Lambda(Lambda,U,nu,gamma,ix,q,p,nK,w,type)
-        Ld = Lambda - Lambda_old
-        qloss = sum(Ld*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(Ld**2) - f_last
+        G = Lambda - Lambda_old
+        qloss = sum(G*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(G**2) - f_last
         call loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,f)
         if (qloss+f.ge.zero) then
            exit

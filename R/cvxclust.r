@@ -1,13 +1,15 @@
-#' Convex Clustering Path via ADMM
+#' Convex Clustering Path via Variable Splitting Methods
 #' 
-#' \code{cvxclust_path_admm} estimates the convex clustering path via ADMM.
+#' \code{cvxclust} estimates the convex clustering path via variable splitting methods: ADMM and AMA. This function
+#' is a wrapper function that calls either \code{cvxclust_path_admm} or \code{cvxclust_path_ama} (the default) to perform the computation.
 #' Required inputs include a data matrix \code{X} (rows are features; columns are samples), a vector of weights
 #' \code{w}, and a sequence of regularization parameters \code{gamma}.
-#' Two penalty norms are currently supported: 1-norm and 2-norm. ADMM admits acceleration by extrapolated steps akin to those in FISTA.
-#' This speed-up is employed by default.
+#' Two penalty norms are currently supported: 1-norm and 2-norm. Both ADMM and AMA admit acceleration schemes at little additional computation.
+#' Acceleration is turned on by default.
 #' 
 #' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
 #' @param w A vector of nonnegative weights. The ith entry \code{w[i]} denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
+#' @param method Algorithm to use: "admm" or "ama"
 #' @param gamma A sequence of regularization parameters.
 #' @param nu A positive penalty parameter for quadratic deviation term.
 #' @param tol The convergence tolerance.
@@ -19,7 +21,8 @@
 #' @return \code{Lambda} A list of Lagrange multiplier matrices.
 #' @export
 #' @author Eric C. Chi
-#' @seealso \code{\link{cvxclust_path_ama}} for estimating the clustering path with AMA. \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
+#' @seealso \code{\link{cvxclust_path_ama}} and \code{\link{cvxclust_path_admm}} for estimating the clustering path with AMA or ADMM. 
+#' \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples
 #' ## Clusterpaths for Mammal Dentition
 #' data(mammals)
@@ -35,7 +38,7 @@
 #' gamma = seq(0.0,43, length.out=100)
 #' 
 #' ## Perform clustering
-#' sol = cvxclust_path_admm(X,w,gamma,tol=1e-3)
+#' sol = cvxclust(X,w,gamma)
 #' 
 #' ## Plot the cluster path
 #' library(ggplot2)
@@ -60,41 +63,13 @@
 #' data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y),size=1.5)
 #' data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 #' data_plot + theme_bw()
-cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
-  call = match.call()
-  if (!is.null(type) && !(type %in% c(1,2)))
-    stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
-  nGamma = length(gamma)
-  p = ncol(X)
-  q = nrow(X)
-  nK = p*(p-1)/2
-  Lambda = matrix(0,q,nK)
-  V = matrix(0,q,nK)
-  list_U = vector(mode="list",length=nGamma)
-  list_V = vector(mode="list",length=nGamma)
-  list_Lambda = vector(mode="list",length=nGamma)
-  ix = vec2tri(1:nK,p)  
-  iter_vec = integer(nGamma)  
-  print("gamma    its | primal res      dual res      max res     ")
-  print("---------------------------------------------------------")    
-  for (ig in 1:nGamma) {
-    gam = gamma[ig]
-    cc = cvxclust_admm(X,Lambda,V,ix,w,gam,nu=nu,type=type,max_iter=max_iter,tol=tol,accelerate=accelerate)
-    iter_vec[ig] = cc$iter
-    Lambda = cc$Lambda
-    V = cc$V
-    list_U[[ig]] = cc$U
-    list_V[[ig]] = V
-    list_Lambda[[ig]] = Lambda 
-    print(sprintf("%5d  %5d | %5f        %5f      %7f", ig, cc$iter, signif(cc$primal[cc$iter],4),
-                  signif(cc$dual[cc$iter],4),
-                  signif(max(cc$primal[cc$iter],cc$dual[cc$iter]),4)))    
-    #    if (norm(cc$V,'1')==0) {
-    #      print('Single cluster')
-    #      break
-    #    }
+cvxclust = function(X,w,gamma,method="ama",nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
+  if (!is.null(method) && !(method %in% c("ama","admm")))
+    stop("method must be 'ama', 'admm', or NULL.")
+  if (method == "ama") {
+    cvxclust_obj = cvxclust_path_ama(X,w,gamma,nu=nu,tol=tol,max_iter=max_iter,type=type,accelerate=accelerate)
+  } else {
+    cvxclust_obj = cvxclust_path_admm(X,w,gamma,nu=nu,tol=tol,max_iter=max_iter,type=type,accelerate=accelerate)
   }
-  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,iters=iter_vec,call=call)
-  class(cvxclust_obj) <- "cvxclustobject"
-  return(cvxclust_obj)  
+  return(cvxclust_obj)
 }

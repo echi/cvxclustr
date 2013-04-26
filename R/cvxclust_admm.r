@@ -9,11 +9,11 @@
 #' }
 #' 
 #' @param X The q-by-p data matrix whose columns are to be clustered.
-#' @param Lambda The q-by-k matrix of Lagrange multipliers
-#' @param V The q-by-k matrix of centroid differences
-#' @param ix The k-by-2 matrix of index pairs
-#' @param w The vector of k positive weights
-#' @param gamma The regularization parameter controlling the amount of shrinkage
+#' @param Lambda The q-by-k matrix of Lagrange multipliers.
+#' @param V The q-by-k matrix of centroid differences.
+#' @param ix The k-by-2 matrix of index pairs.
+#' @param w The vector of k positive weights.
+#' @param gamma The regularization parameter controlling the amount of shrinkage.
 #' @param nu A positive penalty parameter for quadratic deviation term.
 #' @param tol The convergence tolerance.
 #' @param max_iter The maximum number of iterations.

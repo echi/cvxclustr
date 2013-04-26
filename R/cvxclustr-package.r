@@ -15,6 +15,20 @@
 #' }
 #' Two penalty norms are currently supported: 1-norm and 2-norm.
 #'
+#' The two main functions are \code{\link{cvxclust_path_admm}} and \code{\link{cvxclust_path_ama}} which compute the cluster paths using
+#' the ADMM and AMA methods respectively. The function \code{\link{cvxclust}} is a wrapper function that calls either 
+#' \code{cvxclust_path_admm} or \code{cvxclust_path_ama} (the default) to perform the computation.
+#' 
+#' The functions \code{\link{kernel_weights}} and \code{\link{knn_weights}} can be used in sequence
+#' to compute weights that can improve the quality of the clustering paths.
+#' 
+#' The typical usage consists of three steps
+#' \itemize{
+#' \item Compute weights \code{w}
+#' \item Generate a geometrically increasing regularization parameter sequence. Unfortunately a closed form expression for the minimum amount of penalization to get complete coalescence is currently unknown.
+#' \item Call \code{\link{cvxclust}} using the data \code{X}, weights \code{w}, and regularization parameter sequence \code{gamma}.
+#' }
+#'
 #' @author Eric C. Chi
 #' @references Eric C. Chi, Kenneth Lange (2013). Splitting Methods
 #'   for convex clustering. arXiv: 1304.0499 [stat.ML].

@@ -1,9 +1,10 @@
-\name{cvxclust_path_admm}
-\alias{cvxclust_path_admm}
-\title{Convex Clustering Path via ADMM}
+\name{cvxclust}
+\alias{cvxclust}
+\title{Convex Clustering Path via Variable Splitting Methods}
 \usage{
-  cvxclust_path_admm(X, w, gamma, nu = 1, tol = 0.001,
-    max_iter = 10000, type = 2, accelerate = TRUE)
+  cvxclust(X, w, gamma, method = "ama", nu = 1,
+    tol = 0.001, max_iter = 10000, type = 2,
+    accelerate = TRUE)
 }
 \arguments{
   \item{X}{The data matrix to be clustered. The rows are
@@ -12,6 +13,8 @@
   \item{w}{A vector of nonnegative weights. The ith entry
   \code{w[i]} denotes the weight used between the ith pair
   of centroids. The weights are in dictionary order.}
+
+  \item{method}{Algorithm to use: "admm" or "ama"}
 
   \item{gamma}{A sequence of regularization parameters.}
 
@@ -36,14 +39,18 @@
   \code{Lambda} A list of Lagrange multiplier matrices.
 }
 \description{
-  \code{cvxclust_path_admm} estimates the convex clustering
-  path via ADMM. Required inputs include a data matrix
-  \code{X} (rows are features; columns are samples), a
-  vector of weights \code{w}, and a sequence of
-  regularization parameters \code{gamma}. Two penalty norms
-  are currently supported: 1-norm and 2-norm. ADMM admits
-  acceleration by extrapolated steps akin to those in
-  FISTA. This speed-up is employed by default.
+  \code{cvxclust} estimates the convex clustering path via
+  variable splitting methods: ADMM and AMA. This function
+  is a wrapper function that calls either
+  \code{cvxclust_path_admm} or \code{cvxclust_path_ama}
+  (the default) to perform the computation. Required inputs
+  include a data matrix \code{X} (rows are features;
+  columns are samples), a vector of weights \code{w}, and a
+  sequence of regularization parameters \code{gamma}. Two
+  penalty norms are currently supported: 1-norm and 2-norm.
+  Both ADMM and AMA admit acceleration schemes at little
+  additional computation. Acceleration is turned on by
+  default.
 }
 \examples{
 ## Clusterpaths for Mammal Dentition
@@ -60,7 +67,7 @@ w = knn_weights(w,k,p)
 gamma = seq(0.0,43, length.out=100)
 
 ## Perform clustering
-sol = cvxclust_path_admm(X,w,gamma,tol=1e-3)
+sol = cvxclust(X,w,gamma)
 
 ## Plot the cluster path
 library(ggplot2)
@@ -90,8 +97,10 @@ data_plot + theme_bw()
   Eric C. Chi
 }
 \seealso{
-  \code{\link{cvxclust_path_ama}} for estimating the
-  clustering path with AMA. \code{\link{kernel_weights}}
-  and \code{\link{knn_weights}} compute useful weights.
+  \code{\link{cvxclust_path_ama}} and
+  \code{\link{cvxclust_path_admm}} for estimating the
+  clustering path with AMA or ADMM.
+  \code{\link{kernel_weights}} and
+  \code{\link{knn_weights}} compute useful weights.
 }
 

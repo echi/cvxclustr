@@ -1,3 +1,4 @@
+export(cvxclust)
 export(cvxclust_admm)
 export(cvxclust_ama)
 export(cvxclust_path_admm)
