@@ -1,18 +1,17 @@
-#' Convex Clustering via ADMM
+#' Convex Clustering Path via ADMM
 #' 
-#' \code{cvxclust_path_admm} estimates the convex clustering path via ADMM using warm starts.
-#' q denote the number of data points and p denote the number of covariates. Let k denote
-#' the number non-zero weights.
+#' \code{cvxclust_path_admm} estimates the convex clustering path via ADMM.
 #' 
-#' @param X q-by-p data matrix
-#' @param w vector of k positive weights. The ith entry w[i] denotes the weight used between the ith pair ofcentroids. The weights are in dictionary order.
-#' @param gamma sequence of regularization parameters
-#' @param nu positive penalty parameter for quadratic deviation term
-#' @param tol convergence tolerance
-#' @param max_iter maximum number of iterations
-#' @param type integer indicating the norm used: 1 = 1-norm, 2 = 2-norm
-#' @param accelerate boolean indicating whether to use acceleration
+#' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
+#' @param w A vector of nonnegative weights. The ith entry w[i] denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
+#' @param gamma A sequence of regularization parameters.
+#' @param nu A positive penalty parameter for quadratic deviation term.
+#' @param tol The convergence tolerance.
+#' @param max_iter The maximum number of iterations.
+#' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
+#' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
 #' @export
+#' @seealso \code{\link{cvxclust_path_ama}} for estimating the clustering path with AMA. \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples
 #' ## Create a small set of points to cluster.
 #' set.seed(12345)
@@ -42,8 +41,8 @@
 #' library(ggplot2)
 #' df.paths = data.frame(x=c(),y=c(), group=c())
 #' for (j in 1:nGamma) {
-#'   x = sol$UHx[[j]][1,]
-#'   y = sol$UHx[[j]][2,]
+#'   x = sol$U[[j]][1,]
+#'   y = sol$U[[j]][2,]
 #'   df = data.frame(x=x, y=y, group=1:p)
 #'   df.paths = rbind(df.paths,df)
 #' }
@@ -85,10 +84,9 @@
 #' pc = svdX$u[,1:2,drop=FALSE]
 #' pc.df = as.data.frame(t(pc)%*%X)
 #' nGamma = sol$nGamma
-#' Uout = sol$UHx
 #' df.paths = data.frame(x=c(),y=c(), group=c())
 #' for (j in 1:nGamma) {
-#'   pcs = t(pc)%*%Uout[[j]]
+#'   pcs = t(pc)%*%sol$U[[j]]
 #'   x = pcs[1,]
 #'   y = pcs[2,]
 #'   df = data.frame(x=pcs[1,], y=pcs[2,], group=1:p)
@@ -116,11 +114,13 @@ cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-4,max_iter=1e4,type=2,accele
   list_V = vector(mode="list",length=nGamma)
   list_Lambda = vector(mode="list",length=nGamma)
   ix = vec2tri(1:nK,p)  
+  iter_vec = integer(nGamma)  
   print("gamma    its | primal res      dual res      max res     ")
   print("---------------------------------------------------------")    
   for (ig in 1:nGamma) {
     gam = gamma[ig]
     cc = cvxclust_admm(X,Lambda,V,ix,w,gam,nu=nu,type=type,max_iter=max_iter,tol=tol,accelerate=accelerate)
+    iter_vec[ig] = cc$iter
     Lambda = cc$Lambda
     V = cc$V
     list_U[[ig]] = cc$U
@@ -129,13 +129,13 @@ cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-4,max_iter=1e4,type=2,accele
     print(sprintf("%5d  %5d | %5f        %5f      %7f", ig, cc$iter, signif(cc$primal[cc$iter],4),
                   signif(cc$dual[cc$iter],4),
                   signif(max(cc$primal[cc$iter],cc$dual[cc$iter]),4)))    
-#    print(paste0("gamma: ",ig,"| itn: ", cc$iter,"| primal: ", signif(cc$primal[cc$iter],4),
-#                     "| dual: ", signif(cc$dual[cc$iter],4),
-#                     "| max: ", signif(max(cc$primal[cc$iter],cc$dual[cc$iter]),4)))
     #    if (norm(cc$V,'1')==0) {
     #      print('Single cluster')
     #      break
     #    }
   }
-  return(list(UHx=list_U,VHx=list_V,LambdaHx=list_Lambda,nGamma=ig,call=call))
+#  return(list(UHx=list_U,VHx=list_V,LambdaHx=list_Lambda,nGamma=ig,call=call))
+  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,iters=iter_vec,call=call)
+  class(cvxclust_obj) <- "cvxclustobject"
+  return(cvxclust_obj)  
 }

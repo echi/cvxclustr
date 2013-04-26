@@ -4,46 +4,55 @@
 \usage{
   cvxclust_ama(X, Lambda, ix, M1, M2, s1, s2, w, gamma, nu,
     eta = 2, type = 2, max_iter = 100, tol = 1e-04,
-    accelerate = TRUE)
+    accelerate = TRUE, backtracking = TRUE)
 }
 \arguments{
-  \item{X}{q-by-p data matrix}
+  \item{X}{The q-by-p data matrix whose columns are to be
+  clustered.}
 
-  \item{Lambda}{q-by-k matrix of Lagrange multipliers}
+  \item{Lambda}{The q-by-k matrix of Lagrange multipliers}
 
-  \item{ix}{k-by-2 matrix of index pairs}
+  \item{ix}{The k-by-2 matrix of index pairs}
 
-  \item{M1}{}
+  \item{M1}{Index set used to track nonzero weights}
 
-  \item{M2}{}
+  \item{M2}{Index set used to track nonzero weights}
 
-  \item{s1}{}
+  \item{s1}{Index set used to track nonzero weights}
 
-  \item{s2}{}
+  \item{s2}{Index set used to track nonzero weights}
 
-  \item{w}{vector of k positive weights}
+  \item{w}{A vector of k positive weights}
 
-  \item{gamma}{regularization parameter controlling the
+  \item{gamma}{The regularization parameter controlling the
   amount of shrinkage}
 
-  \item{eta}{step decrement}
+  \item{nu}{The initial step size parameter when
+  backtracking is applied. Otherwise it is a fixed step
+  size in which case there are no guarantees of convergence
+  if it exceeds \code{2/ncol(X)}.}
 
-  \item{nu}{positive penalty parameter for quadratic
-  deviation term}
+  \item{eta}{The step decrement factor}
 
-  \item{type}{integer indicating the norm used}
+  \item{type}{An integer indicating the norm used: 1 =
+  1-norm, 2 = 2-norm.}
 
-  \item{max_iter}{maximum number of iterations}
+  \item{max_iter}{The maximum number of iterations.}
 
-  \item{tol}{convergence tolerance}
+  \item{tol}{The convergence tolerance.}
 
-  \item{accelerate}{boolean indicating whether to use
-  acceleration}
+  \item{accelerate}{If \code{TRUE} (the default),
+  acceleration is turned on.}
+
+  \item{backtracking}{If \code{TRUE} (the default),
+  acceleration is turned on.}
 }
 \description{
   \code{cvxclust_ama} performs convex clustering via AMA.
-  Let q denote the number of data points and p denote the
-  number of covariates. Let k denote the number non-zero
-  weights.
+  This is an R wrapper function around Fortran code.
+  Dimensions of various arguments are as follows: \itemize{
+  \item{q is the number of data points} \item{p is the
+  number of features} \item{k is the number non-zero
+  weights.} }
 }
 

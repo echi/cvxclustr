@@ -1,18 +1,23 @@
-#' Convex Clustering via AMA
+#' Convex Clustering Path via AMA
 #' 
-#' \code{cvxclust_path_ama} estimates the convex clustering path via AMA using warm starts.
-#' q denote the number of data points and p denote the number of covariates. Let k denote
-#' the number non-zero weights.
+#' \code{cvxclust_path_ama} estimates the convex clustering path via the Alternating Minimization Algorithm.
+#' Required inputs include a data matrix \code{X} (rows are features; columns are samples), a vector of weights
+#' \code{w}, and a sequence of regularization parameters \code{gamma}.
+#' Two penalty norms are currently supported: 1-norm and 2-norm.
+#' AMA is performing proximal gradient ascent on the dual function, and therefore can be accelerated with FISTA.
+#' Additional speed up can be had by employing backtracking. Both speed-ups are employed by default.
 #' 
-#' @param X q-by-p data matrix
-#' @param w vector of k positive weights
-#' @param gamma sequence of regularization parameters
-#' @param nu0 positive penalty parameter for quadratic deviation term
-#' @param tol convergence tolerance
-#' @param max_iter maximum number of iterations
-#' @param type integer indicating the norm used
-#' @param accelerate boolean indicating whether to use acceleration
+#' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
+#' @param w A vector of nonnegative weights. The ith entry w[i] denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
+#' @param gamma A sequence of regularization parameters.
+#' @param nu The initial step size parameter when backtracking is applied. Otherwise it is a fixed step size in which case there are no guarantees of convergence if it exceeds \code{2/ncol(X)}.
+#' @param tol The convergence tolerance.
+#' @param max_iter The maximum number of iterations.
+#' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
+#' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
+#' @param backtracking If \code{TRUE} (the default), backtracking is used.
 #' @export
+#' @seealso \code{\link{cvxclust_path_admm}} for estimating the clustering path with ADMM. \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples
 #' ## Create a small set of points to cluster.
 #' set.seed(12345)
@@ -42,8 +47,8 @@
 #' library(ggplot2)
 #' df.paths = data.frame(x=c(),y=c(), group=c())
 #' for (j in 1:nGamma) {
-#'   x = sol$UHx[[j]][1,]
-#'   y = sol$UHx[[j]][2,]
+#'   x = sol$U[[j]][1,]
+#'   y = sol$U[[j]][2,]
 #'   df = data.frame(x=x, y=y, group=1:p)
 #'   df.paths = rbind(df.paths,df)
 #' }
@@ -51,7 +56,8 @@
 #' data_plot = data_plot + geom_path(aes(group=group),colour='grey60',alpha=0.5)
 #' data_plot = data_plot + geom_point(data=data.frame(x=X[1,],y=X[2,]),aes(x=x,y=y))
 #' data_plot + theme_bw()
-cvxclust_path_ama = function(X, w, gamma,nu0=10,tol=1e-4,max_iter=1e6,type=2,accelerate=TRUE) {
+cvxclust_path_ama = function(X,w,gamma,nu=10,tol=1e-4,max_iter=1e4,type=2,accelerate=TRUE,
+                             backtracking=TRUE) {
   call = match.call()
   if (!is.null(type) && !(type %in% c(1,2)))
     stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
@@ -64,7 +70,6 @@ cvxclust_path_ama = function(X, w, gamma,nu0=10,tol=1e-4,max_iter=1e6,type=2,acc
   list_U = vector(mode="list",length=nGamma)
   list_V = vector(mode="list",length=nGamma)
   list_Lambda = vector(mode="list",length=nGamma)
-  nu = nu0
   ix = edge_info$ix  
   M1 = edge_info$M1
   M2 = edge_info$M2
@@ -75,7 +80,8 @@ cvxclust_path_ama = function(X, w, gamma,nu0=10,tol=1e-4,max_iter=1e6,type=2,acc
   print("---------------------------------------------------------")  
   for (ig in 1:nGamma) {
     gam = gamma[ig]
-    cc = cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=1e4,tol=tol,type=type,accelerate=accelerate)
+    cc = cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=1e4,tol=tol,type=type,
+                      accelerate=accelerate,backtracking=backtracking)
     iter_vec[ig] = cc$iter
     nu = cc$nu
     Lambda = cc$Lambda
@@ -85,14 +91,12 @@ cvxclust_path_ama = function(X, w, gamma,nu0=10,tol=1e-4,max_iter=1e6,type=2,acc
     print(sprintf("%5d  %5d | %5f        %5f      %7f", ig, cc$iter, signif(cc$primal[cc$iter],4),
                   signif(cc$dual[cc$iter],4),
                   signif(cc$primal[cc$iter]-cc$dual[cc$iter],4)))
-#    "12345__12345|_12345________12345______1234567"    
-#    print(paste0("gamma: ",ig,"| itn: ", cc$iter,"| primal: ", signif(cc$primal[cc$iter],4),
-#                 "| dual: ", signif(cc$dual[cc$iter],4),
-#                 "| gap: ", signif(cc$primal[cc$iter]-cc$dual[cc$iter],4)))
     #        if (norm(cc$V,'1')==0) {
     #          print('Single cluster')
     #          break
     #        }
   }
-  return(list(UHx=list_U,VHx=list_V,LambdaHx=list_Lambda,nGamma=ig,iters=iter_vec,call=call))
+  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,iters=iter_vec,call=call)
+  class(cvxclust_obj) <- "cvxclustobject"
+  return(cvxclust_obj)
 }

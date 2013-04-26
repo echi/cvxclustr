@@ -1,37 +1,36 @@
 \name{cvxclust_path_admm}
 \alias{cvxclust_path_admm}
-\title{Convex Clustering via ADMM}
+\title{Convex Clustering Path via ADMM}
 \usage{
   cvxclust_path_admm(X, w, gamma, nu = 1, tol = 1e-04,
     max_iter = 10000, type = 2, accelerate = TRUE)
 }
 \arguments{
-  \item{X}{q-by-p data matrix}
+  \item{X}{The data matrix to be clustered. The rows are
+  the features, and the columns are the samples.}
 
-  \item{w}{vector of k positive weights. The ith entry w[i]
-  denotes the weight used between the ith pair ofcentroids.
-  The weights are in dictionary order.}
+  \item{w}{A vector of nonnegative weights. The ith entry
+  w[i] denotes the weight used between the ith pair of
+  centroids. The weights are in dictionary order.}
 
-  \item{gamma}{sequence of regularization parameters}
+  \item{gamma}{A sequence of regularization parameters.}
 
-  \item{nu}{positive penalty parameter for quadratic
-  deviation term}
+  \item{nu}{A positive penalty parameter for quadratic
+  deviation term.}
 
-  \item{tol}{convergence tolerance}
+  \item{tol}{The convergence tolerance.}
 
-  \item{max_iter}{maximum number of iterations}
+  \item{max_iter}{The maximum number of iterations.}
 
-  \item{type}{integer indicating the norm used: 1 = 1-norm,
-  2 = 2-norm}
+  \item{type}{An integer indicating the norm used: 1 =
+  1-norm, 2 = 2-norm.}
 
-  \item{accelerate}{boolean indicating whether to use
-  acceleration}
+  \item{accelerate}{If \code{TRUE} (the default),
+  acceleration is turned on.}
 }
 \description{
   \code{cvxclust_path_admm} estimates the convex clustering
-  path via ADMM using warm starts. q denote the number of
-  data points and p denote the number of covariates. Let k
-  denote the number non-zero weights.
+  path via ADMM.
 }
 \examples{
 ## Create a small set of points to cluster.
@@ -62,8 +61,8 @@ sol = cvxclust_path_admm(X,w,gamma)
 library(ggplot2)
 df.paths = data.frame(x=c(),y=c(), group=c())
 for (j in 1:nGamma) {
-  x = sol$UHx[[j]][1,]
-  y = sol$UHx[[j]][2,]
+  x = sol$U[[j]][1,]
+  y = sol$U[[j]][2,]
   df = data.frame(x=x, y=y, group=1:p)
   df.paths = rbind(df.paths,df)
 }
@@ -105,10 +104,9 @@ svdX = svd(X)
 pc = svdX$u[,1:2,drop=FALSE]
 pc.df = as.data.frame(t(pc)\%*\%X)
 nGamma = sol$nGamma
-Uout = sol$UHx
 df.paths = data.frame(x=c(),y=c(), group=c())
 for (j in 1:nGamma) {
-  pcs = t(pc)\%*\%Uout[[j]]
+  pcs = t(pc)\%*\%sol$U[[j]]
   x = pcs[1,]
   y = pcs[2,]
   df = data.frame(x=pcs[1,], y=pcs[2,], group=1:p)
@@ -122,5 +120,10 @@ data_plot = data_plot + geom_path(aes(group=group),colour='grey60',alpha=0.5)
 data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y,colour=Species,shape=Species))
 data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 data_plot + theme_bw()
+}
+\seealso{
+  \code{\link{cvxclust_path_ama}} for estimating the
+  clustering path with AMA. \code{\link{kernel_weights}}
+  and \code{\link{knn_weights}} compute useful weights.
 }
 

@@ -1,3 +1,5 @@
+export(cvxclust_admm)
+export(cvxclust_ama)
 export(cvxclust_path_admm)
 export(cvxclust_path_ama)
 export(kernel_weights)

@@ -1,20 +1,25 @@
 #' Convex Clustering via ADMM
 #' 
-#' \code{cvxclust_admm} performs convex clustering via ADMM. Let
-#' q denote the number of data points and p denote the number of covariates. Let k denote
-#' the number non-zero weights.
+#' \code{cvxclust_admm} performs convex clustering via ADMM. This is an R wrapper function around Fortran code.
+#' Dimensions of various arguments are as follows:
+#' \itemize{
+#' \item{q is the number of data points}
+#' \item{p is the number of features}
+#' \item{k is the number non-zero weights.}
+#' }
 #' 
-#' @param X q-by-p data matrix
-#' @param Lambda q-by-k matrix of Lagrange multipliers
-#' @param V q-by-k matrix of centroid differences
-#' @param ix k-by-2 matrix of index pairs
-#' @param w vector of k positive weights
-#' @param gamma regularization parameter controlling the amount of shrinkage
-#' @param nu positive penalty parameter for quadratic deviation term
-#' @param type integer indicating the norm used
-#' @param max_iter maximum number of iterations
-#' @param tol convergence tolerance
-#' @param accelerate boolean indicating whether to use acceleration
+#' @param X The q-by-p data matrix whose columns are to be clustered.
+#' @param Lambda The q-by-k matrix of Lagrange multipliers
+#' @param V The q-by-k matrix of centroid differences
+#' @param ix The k-by-2 matrix of index pairs
+#' @param w The vector of k positive weights
+#' @param gamma The regularization parameter controlling the amount of shrinkage
+#' @param nu A positive penalty parameter for quadratic deviation term.
+#' @param tol The convergence tolerance.
+#' @param max_iter The maximum number of iterations.
+#' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
+#' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
+#' @export
 #' @useDynLib cvxclustr
 cvxclust_admm = function(X,Lambda,V,ix,w,gamma,nu=1,type=2,max_iter=1e2,tol=1e-4,accelerate=TRUE) {
 

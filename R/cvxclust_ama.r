@@ -1,26 +1,33 @@
 #' Convex Clustering via AMA
 #' 
-#' \code{cvxclust_ama} performs convex clustering via AMA. Let
-#' q denote the number of data points and p denote the number of covariates. Let k denote
-#' the number non-zero weights.
+#' \code{cvxclust_ama} performs convex clustering via AMA. This is an R wrapper function around Fortran code.
+#' Dimensions of various arguments are as follows:
+#' \itemize{
+#' \item{q is the number of data points}
+#' \item{p is the number of features}
+#' \item{k is the number non-zero weights.}
+#' }
 #' 
-#' @param X q-by-p data matrix
-#' @param Lambda q-by-k matrix of Lagrange multipliers
-#' @param ix k-by-2 matrix of index pairs
-#' @param M1
-#' @param M2
-#' @param s1
-#' @param s2
-#' @param w vector of k positive weights
-#' @param gamma regularization parameter controlling the amount of shrinkage
-#' @param eta step decrement
-#' @param nu positive penalty parameter for quadratic deviation term
-#' @param type integer indicating the norm used
-#' @param max_iter maximum number of iterations
-#' @param tol convergence tolerance
-#' @param accelerate boolean indicating whether to use acceleration
+#' @param X The q-by-p data matrix whose columns are to be clustered.
+#' @param Lambda The q-by-k matrix of Lagrange multipliers
+#' @param ix The k-by-2 matrix of index pairs
+#' @param M1 Index set used to track nonzero weights
+#' @param M2 Index set used to track nonzero weights
+#' @param s1 Index set used to track nonzero weights
+#' @param s2 Index set used to track nonzero weights
+#' @param w A vector of k positive weights
+#' @param gamma The regularization parameter controlling the amount of shrinkage
+#' @param nu The initial step size parameter when backtracking is applied. Otherwise it is a fixed step size in which case there are no guarantees of convergence if it exceeds \code{2/ncol(X)}.
+#' @param eta The step decrement factor
+#' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
+#' @param max_iter The maximum number of iterations.
+#' @param tol The convergence tolerance.
+#' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
+#' @param backtracking If \code{TRUE} (the default), acceleration is turned on.
+#' @export
 #' @useDynLib cvxclustr
-cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu,eta=2,type=2,max_iter=1e2,tol=1e-4,accelerate=TRUE) {
+cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu,eta=2,type=2,max_iter=1e2,tol=1e-4,
+                        accelerate=TRUE, backtracking=TRUE) {
   q = as.integer(nrow(X))
   p = as.integer(ncol(X))
   nK = as.integer(ncol(Lambda))
@@ -47,11 +54,13 @@ cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu,eta=2,type=2,max_iter
   primal = double(max_iter)
   dual = double(max_iter)
   if (accelerate) {
-    fxname = 'convex_cluster_ama_fista_backtrack'
-#    fxname = 'convex_cluster_ama_fista'
+    fxname = 'convex_cluster_ama_fista'
+    if (backtracking) 
+      fxname = 'convex_cluster_ama_fista_backtrack'
   } else {
     fxname = 'convex_cluster_ama_backtrack'
-#    fxname = 'convex_cluster_ama'
+    if (backtracking)    
+      fxname = 'convex_cluster_ama'
   }  
   sol = .Fortran(fxname,X=X,Lambda=Lambda,U=U,V=V,q=q,p=p,nK=nK,ix=ix,w=w,gamma=gamma,nu=nu,
                  eta=eta,s1=s1,s2=s2,M1=M1,M2=M2,mix1=mix1,mix2=mix2,primal=primal,dual=dual,
