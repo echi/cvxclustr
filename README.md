@@ -17,7 +17,8 @@ Two penalty norms are currently supported: 1-norm and 2-norm.
 ## Remarks
 
 Details on the algorithms are in the paper [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499) by Chi and Lange.
-Previous takes on this formulation of clustering are
+
+Previous takes on this formulation of clustering:
 
 [Just Relax and Come Clustering! A Convexification of k-Means Clustering](http://www.control.isy.liu.se/research/reports/2011/2992.pdf)
 by Lindsten, Ohlsson, and Ljung.
