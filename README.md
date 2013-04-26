@@ -19,8 +19,8 @@ Two penalty norms are currently supported: 1-norm and 2-norm.
 Details on the algorithms are in the paper [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499) by Chi and Lange.
 Previous takes on this formulation of clustering are
 
-	* [Just Relax and Come Clustering! A Convexification of k-Means Clustering](http://www.control.isy.liu.se/research/reports/2011/2992.pdf)
+[Just Relax and Come Clustering! A Convexification of k-Means Clustering](http://www.control.isy.liu.se/research/reports/2011/2992.pdf)
 by Lindsten, Ohlsson, and Ljung.
 
-	* [Clusterpath: An Algorithm for Clustering using Convex Fusion Penalties](http://www.icml-2011.org/papers/419_icmlpaper.pdf)
+[Clusterpath: An Algorithm for Clustering using Convex Fusion Penalties](http://www.icml-2011.org/papers/419_icmlpaper.pdf)
 	by Hocking, Joulin, Bach, and Vert.
