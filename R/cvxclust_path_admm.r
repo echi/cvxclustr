@@ -62,8 +62,6 @@
 #' data_plot + theme_bw()
 cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
   call = match.call()
-  if (!is.null(type) && !(type %in% c(1,2)))
-    stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
   nGamma = length(gamma)
   p = ncol(X)
   q = nrow(X)

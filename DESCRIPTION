@@ -1,12 +1,15 @@
 Package: cvxclustr
 Maintainer: Eric C. Chi <ecchi@ucla.edu>
 Author: Eric C. Chi <ecchi@ucla.edu>
-Version: 0.1.0
+Version: 1.0.0
 License: CC BY-NC-SA 3.0
 Title: Splitting methods for convex clustering
 Description: Alternating Minimization Algorithm (AMA) and Alternating Direction
     Method of Multipliers (ADMM) splitting methods for convex clustering.
+Depends:
+    R (>= 2.15.0)
 Suggests:
+    compiler,
     testthat,
     roxygen2,
     ggplot2

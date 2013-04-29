@@ -5,7 +5,7 @@
 #' \code{w}, and a sequence of regularization parameters \code{gamma}.
 #' Two penalty norms are currently supported: 1-norm and 2-norm.
 #' AMA is performing proximal gradient ascent on the dual function, and therefore can be accelerated with FISTA.
-#' Additional speed up can be had by employing backtracking. Both speed-ups are employed by default.
+#' This speed-up is employed by default.
 #' 
 #' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
 #' @param w A vector of nonnegative weights. The ith entry \code{w[i]} denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
@@ -15,7 +15,6 @@
 #' @param max_iter The maximum number of iterations.
 #' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
-#' @param backtracking If \code{TRUE} (the default), backtracking is used.
 #' @return \code{U} A list of centroid matrices.
 #' @return \code{V} A list of centroid difference matrices.
 #' @return \code{Lambda} A list of Lagrange multiplier matrices.
@@ -37,7 +36,7 @@
 #' gamma = seq(0.0,43, length.out=100)
 #' 
 #' ## Perform clustering
-#' sol = cvxclust_path_ama(X,w,gamma,nu=10)
+#' sol = cvxclust_path_ama(X,w,gamma)
 #' 
 #' ## Plot the cluster path
 #' library(ggplot2)
@@ -62,17 +61,11 @@
 #' data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y),size=1.5)
 #' data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 #' data_plot + theme_bw()
-cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE,
-                             backtracking=TRUE) {
+cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
   call = match.call()
-  if (!is.null(type) && !(type %in% c(1,2)))
-    stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
   nGamma = length(gamma)
   p = ncol(X)
   q = nrow(X)
-  if (!backtracking && nu >= 2/p) {
-    warning("The stepsize nu may be too large.")
-  }
   edge_info = compactify_edges(w,p)
   nK = length(which(w > 0))
   Lambda = matrix(0,q,nK)
@@ -90,7 +83,7 @@ cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,acceler
   for (ig in 1:nGamma) {
     gam = gamma[ig]
     cc = cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=max_iter,tol=tol,type=type,
-                      accelerate=accelerate,backtracking=backtracking)
+                      accelerate=accelerate)
     iter_vec[ig] = cc$iter
     nu = cc$nu
     Lambda = cc$Lambda

@@ -11,6 +11,7 @@ module constants
   real(kind=dble_prec), parameter :: seven = 7.0_dble_prec
   real(kind=dble_prec), parameter :: eight = 8.0_dble_prec
   real(kind=dble_prec), parameter :: nine  = 9.0_dble_prec
+  real(kind=dble_prec), parameter :: ten  = 10.0_dble_prec
   real(kind=dble_prec), parameter :: half  = 0.5_dble_prec
 end module constants
 
@@ -303,6 +304,15 @@ subroutine proxA(vector_in,n,vector_out,tau,type)
 
 end subroutine proxA
 
+subroutine projectA(vector_in,n,vector_out,tau,type)
+  use proximal
+  implicit none
+  integer :: n, type
+  real(kind=dble_prec) :: vector_in(n), vector_out(n), tau
+  
+  call project(vector_in,n,vector_out,tau,type)
+end subroutine projectA
+
 module admm
   use constants
   implicit none
@@ -458,7 +468,7 @@ contains
        DU = U(:,ix(k,1)) - U(:,ix(k,2))
        penalty = penalty + w(k)*norm(DU,type)
     end do
-    output = half*sum((X - U)**2) + gamma*penalty
+    output = half*sum((X - U)**two) + gamma*penalty
   end subroutine loss_primal
 
   subroutine loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,output)
@@ -479,7 +489,7 @@ contains
        if (s2(ii) > 0) then
           L2 = sum(Lambda(:,M2(1:s2(ii),ii)),2)
        end if
-       first_term = first_term + sum( (L1-L2)**2 )
+       first_term = first_term + sum( (L1-L2)**two )
     end do
     second_term = zero
     do ii=1,nK
@@ -584,10 +594,8 @@ subroutine convex_cluster_ama_backtrack(X,Lambda,U,V,q,p,nK,ix,w,gamma,nu,eta,s1
         call update_Lambda(Lambda,U,nu,gamma,ix,q,p,nK,w,type)
         Ld = Lambda - Lambda_old
 !        qloss = sum(Ld*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(Ld**2) - f_last
-        qloss = -(half/nu)*sum(Ld**2) - f_last
+        qloss = -(half/nu)*sum(Ld*Ld) - f_last
         call loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,f)
-!        if ( (half/nu)*sum(Ld**2) + f_last-f .le. zero) then
-!        print *, -qloss, f
         if (qloss+f.ge.zero) then
            exit
         end if
@@ -604,7 +612,8 @@ subroutine convex_cluster_ama_backtrack(X,Lambda,U,V,q,p,nK,ix,w,gamma,nu,eta,s1
   call update_V(U,Lambda,V,w,gamma,nu,ix,q,p,nK,type)
 end subroutine convex_cluster_ama_backtrack
 
-subroutine convex_cluster_ama_fista(X,Lambda,U,V,q,p,nK,ix,w,gamma,nu,eta,s1,s2,M1,M2,mix1,mix2,primal,dual,max_iter,iter,tol,type)
+subroutine convex_cluster_ama_fista(X,Lambda,U,V,q,p,nK,ix,w,gamma,nu,eta,s1,s2,M1,M2,&
+     mix1,mix2,primal,dual,max_iter,iter,tol,type)
 !
 ! This subroutine solves the convex clustering problem with a fixed step size using FISTA extrapolation steps.
 !
@@ -666,8 +675,8 @@ mix1,mix2,primal,dual,max_iter,iter,tol,type)
      do
         Lambda = Lambda_old
         call update_Lambda(Lambda,U,nu,gamma,ix,q,p,nK,w,type)
-        G = Lambda - Lambda_old
-        qloss = sum(G*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(G**2) - f_last
+        G = ten**(log10(Lambda)-log10(nu)) - ten**(log10(Lambda_old) - log10(nu))
+        qloss = sum(G*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half*nu)*sum(G*G) - f_last
         call loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,f)
         if (qloss+f.ge.zero) then
            exit
@@ -680,7 +689,7 @@ mix1,mix2,primal,dual,max_iter,iter,tol,type)
      dual(iter) = fd
      if (fp-fd < tol*(one + half*(fp+fd))) exit
      S = Lambda
-     alpha = half*(one + sqrt(one + four*(alpha_old**2)))
+     alpha = half*(one + sqrt(one + four*(alpha_old*alpha_old)))
      Lambda = S + ((alpha_old-one)/alpha)*(S-S_old)
      S_old = S
      alpha_old = alpha

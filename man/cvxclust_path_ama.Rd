@@ -3,8 +3,7 @@
 \title{Convex Clustering Path via AMA}
 \usage{
   cvxclust_path_ama(X, w, gamma, nu = 1, tol = 0.001,
-    max_iter = 10000, type = 2, accelerate = TRUE,
-    backtracking = TRUE)
+    max_iter = 10000, type = 2, accelerate = TRUE)
 }
 \arguments{
   \item{X}{The data matrix to be clustered. The rows are
@@ -30,9 +29,6 @@
 
   \item{accelerate}{If \code{TRUE} (the default),
   acceleration is turned on.}
-
-  \item{backtracking}{If \code{TRUE} (the default),
-  backtracking is used.}
 }
 \value{
   \code{U} A list of centroid matrices.
@@ -50,8 +46,7 @@
   penalty norms are currently supported: 1-norm and 2-norm.
   AMA is performing proximal gradient ascent on the dual
   function, and therefore can be accelerated with FISTA.
-  Additional speed up can be had by employing backtracking.
-  Both speed-ups are employed by default.
+  This speed-up is employed by default.
 }
 \examples{
 ## Clusterpaths for Mammal Dentition
@@ -68,7 +63,7 @@ w = knn_weights(w,k,p)
 gamma = seq(0.0,43, length.out=100)
 
 ## Perform clustering
-sol = cvxclust_path_ama(X,w,gamma,nu=10)
+sol = cvxclust_path_ama(X,w,gamma)
 
 ## Plot the cluster path
 library(ggplot2)

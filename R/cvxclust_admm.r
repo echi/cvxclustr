@@ -26,6 +26,8 @@ cvxclust_admm = function(X,Lambda,V,ix,w,gamma,nu=1,type=2,max_iter=1e2,tol=1e-4
 
   q = as.integer(nrow(X))
   p = as.integer(ncol(X))
+  if (!is.null(type) && !(type %in% c(1,2)))
+    stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
   nK = as.integer(ncol(Lambda))
   gamma = as.double(gamma)
   max_iter = as.integer(max_iter)

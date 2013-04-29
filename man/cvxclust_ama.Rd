@@ -2,9 +2,9 @@
 \alias{cvxclust_ama}
 \title{Convex Clustering via AMA}
 \usage{
-  cvxclust_ama(X, Lambda, ix, M1, M2, s1, s2, w, gamma, nu,
-    eta = 2, type = 2, max_iter = 100, tol = 1e-04,
-    accelerate = TRUE, backtracking = TRUE)
+  cvxclust_ama(X, Lambda, ix, M1, M2, s1, s2, w, gamma,
+    nu = 1, eta = 2, type = 2, max_iter = 100, tol = 1e-04,
+    accelerate = TRUE)
 }
 \arguments{
   \item{X}{The q-by-p data matrix whose columns are to be
@@ -43,9 +43,6 @@
   \item{tol}{The convergence tolerance.}
 
   \item{accelerate}{If \code{TRUE} (the default),
-  acceleration is turned on.}
-
-  \item{backtracking}{If \code{TRUE} (the default),
   acceleration is turned on.}
 }
 \value{
