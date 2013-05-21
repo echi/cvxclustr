@@ -15,6 +15,10 @@ $\frac{1}{2} \sum_i || x_i - u_i||_2^2 + \gamma \sum_l w_{l} ||u_{l1} - u_{l2} |
 
 Two penalty norms are currently supported: 1-norm and 2-norm.
 
+## Instalation
+
+You can install the stable version on [CRAN:] (http://cran.r-project.org/web/packages/cvxclustr/)
+
 ## Remarks
 
 Details on the algorithms are in the paper [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499) by Chi and Lange.
