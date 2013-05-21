@@ -657,7 +657,7 @@ mix1,mix2,primal,dual,max_iter,iter,tol,type)
   use ama
   use constants
   implicit none
-  integer :: iter, max_iter, mix1, mix2, nK, p, q, type
+  integer :: ii, iter, max_iter, mix1, mix2, nK, p, q, type
   integer :: ix(nK,2), M1(mix1,p), M2(mix2,p), s1(p), s2(p)
   real(kind=dble_prec) :: Lambda(q,nK), U(q,p), V(q,nK), X(q,p), w(nK)
   real(kind=dble_prec) :: eta, gamma, nu
@@ -672,16 +672,21 @@ mix1,mix2,primal,dual,max_iter,iter,tol,type)
   do iter=1,max_iter
      call update_U(X,Lambda_old,U,M1,M2,s1,s2,mix1,mix2,p,q,nK)
      call loss_dual(X,Lambda_old,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,f_last)
-     do
+     do ii=1,10
         Lambda = Lambda_old
         call update_Lambda(Lambda,U,nu,gamma,ix,q,p,nK,w,type)
-        G = ten**(log10(Lambda)-log10(nu)) - ten**(log10(Lambda_old) - log10(nu))
-        qloss = sum(G*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half*nu)*sum(G*G) - f_last
+!        G = ten**(log10(Lambda)-log10(nu)) - ten**(log10(Lambda_old) - log10(nu))
+        G = Lambda - lambda_old
+        qloss = sum(G*(U(:,ix(:,1)) - U(:,ix(:,2)))) + (half/nu)*sum(G*G) - f_last
         call loss_dual(X,Lambda,ix,p,q,nK,s1,s2,M1,M2,mix1,mix2,f)
-        if (qloss+f.ge.zero) then
+        if (qloss+f.ge.-1e-13) then
+           print *, nu
+           print *, qloss, f, qloss+f
            exit
         end if
+        print *, "bktrack", qloss, f, qloss+f
         nu = nu/eta
+        print *, "bktrack", nu
      end do
      call loss_primal(X,U,gamma,ix,p,q,nK,w,fp,type)
      primal(iter) = fp

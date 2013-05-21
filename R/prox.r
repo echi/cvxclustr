@@ -7,7 +7,7 @@
 #' @param type integer to select proximal mapping type
 #' @useDynLib cvxclustr
 #' @export
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @examples
 #' set.seed(12345)
 #' x = rnorm(10)

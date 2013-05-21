@@ -23,6 +23,7 @@
 #' @param max_iter The maximum number of iterations.
 #' @param tol The convergence tolerance.
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
+#' @param backtrack If \code{TRUE} (the default), backtracking is turned on.
 #' @return \code{U} A list of centroid matrices.
 #' @return \code{V} A list of centroid difference matrices.
 #' @return \code{Lambda} A list of Lagrange multiplier matrices.
@@ -31,18 +32,18 @@
 #' @return \code{dual} The dual objective evaluated at the final iterate.
 #' @return \code{iter} The number of iterations taken.
 #' @export
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @useDynLib cvxclustr
 cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu=1,eta=2,type=2,max_iter=1e2,tol=1e-4,
-                        accelerate=TRUE) {
+                        accelerate=TRUE,backtrack=FALSE) {
   q = as.integer(nrow(X))
   p = as.integer(ncol(X))
   if (!is.null(type) && !(type %in% c(1,2)))
     stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
-  if (nu >= 2/p) {
-    warning("The stepsize nu may be too large. Setting it to 1.999/p.")
-    nu = 1.999/p
-  }
+#  if (nu >= 2/p) {
+#    warning("The stepsize nu may be too large. Setting it to 1.999/p.")
+#    nu = 1.999/p
+#  }
   nK = as.integer(ncol(Lambda))
   mix1 = as.integer(nrow(M1))
   mix2 = as.integer(nrow(M2))
@@ -68,6 +69,8 @@ cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu=1,eta=2,type=2,max_it
   dual = double(max_iter)
   if (accelerate) {
     fxname = 'convex_cluster_ama_fista'
+    if (backtrack)
+      fxname = 'convex_cluster_ama_fista_backtrack'
   } else {
     fxname = 'convex_cluster_ama'
   }  

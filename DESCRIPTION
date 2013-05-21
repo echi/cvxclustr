@@ -1,6 +1,6 @@
 Package: cvxclustr
 Maintainer: Eric C. Chi <ecchi@ucla.edu>
-Author: Eric C. Chi <ecchi@ucla.edu>
+Author: Eric C. Chi, Kenneth Lange
 Version: 1.0.0
 License: CC BY-NC-SA 3.0
 Title: Splitting methods for convex clustering

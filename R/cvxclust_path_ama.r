@@ -15,11 +15,12 @@
 #' @param max_iter The maximum number of iterations.
 #' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
+#' @param backtrack If \code{TRUE} (the default), backtracking is turned on.
 #' @return \code{U} A list of centroid matrices.
 #' @return \code{V} A list of centroid difference matrices.
 #' @return \code{Lambda} A list of Lagrange multiplier matrices.
 #' @export
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @seealso \code{\link{cvxclust_path_admm}} for estimating the clustering path with ADMM. \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples
 #' ## Clusterpaths for Mammal Dentition
@@ -61,7 +62,7 @@
 #' data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y),size=1.5)
 #' data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 #' data_plot + theme_bw()
-cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
+cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE,backtrack=FALSE) {
   call = match.call()
   nGamma = length(gamma)
   p = ncol(X)
@@ -83,7 +84,7 @@ cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,acceler
   for (ig in 1:nGamma) {
     gam = gamma[ig]
     cc = cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=max_iter,tol=tol,type=type,
-                      accelerate=accelerate)
+                      accelerate=accelerate,backtrack=backtrack)
     iter_vec[ig] = cc$iter
     nu = cc$nu
     Lambda = cc$Lambda

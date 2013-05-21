@@ -20,7 +20,7 @@
 #' @param type An integer indicating the norm used: 1 = 1-norm, 2 = 2-norm.
 #' @param accelerate If \code{TRUE} (the default), acceleration is turned on.
 #' @export
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @useDynLib cvxclustr
 cvxclust_admm = function(X,Lambda,V,ix,w,gamma,nu=1,type=2,max_iter=1e2,tol=1e-4,accelerate=TRUE) {
 

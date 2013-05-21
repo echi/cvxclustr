@@ -29,7 +29,7 @@
 #' \item Call \code{\link{cvxclust}} using the data \code{X}, weights \code{w}, and regularization parameter sequence \code{gamma}.
 #' }
 #'
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @references Eric C. Chi, Kenneth Lange (2013). Splitting Methods
 #'   for convex clustering. arXiv: 1304.0499 [stat.ML].
 #'   \url{http://arxiv.org/abs/1304.0499}.

@@ -7,7 +7,7 @@
 #' }, where the lth pair of nodes is (\code{i},\code{j}).
 #' @param X The data matrix to be clustered. The rows are the features, and the columns are the samples.
 #' @param phi The nonnegative parameter that controls the scale of kernel weights
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @export
 #' @return A vector \cite{w} of weights for convex clustering.
 kernel_weights = function(X,phi) {

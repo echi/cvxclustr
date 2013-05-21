@@ -20,7 +20,7 @@
 #' @return \code{V} A list of centroid difference matrices.
 #' @return \code{Lambda} A list of Lagrange multiplier matrices.
 #' @export
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @seealso \code{\link{cvxclust_path_ama}} and \code{\link{cvxclust_path_admm}} for estimating the clustering path with AMA or ADMM. 
 #' \code{\link{kernel_weights}} and \code{\link{knn_weights}} compute useful weights.
 #' @examples

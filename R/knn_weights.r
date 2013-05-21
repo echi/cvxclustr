@@ -7,7 +7,7 @@
 #' @param w A vector of nonnegative weights. The ith entry \code{w[i]} denotes the weight used between the ith pair of centroids. The weights are in dictionary order.
 #' @param k The number of nearest neighbors
 #' @param p The number of data points.
-#' @author Eric C. Chi
+#' @author Eric C. Chi, Kenneth Lange
 #' @export
 #' @return A vector \cite{w} of weights for convex clustering.
 knn_weights = function(w,k,p) {
