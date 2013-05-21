@@ -26,8 +26,8 @@ The developmental version can be pulled from github using the R package [devtool
 	install_github('cvxclustr','echi')
 
 or
-	git clone https://github.com/echi/cvxclustr.git
-	R CMD build cvxclustr
+	git clone https://github.com/echi/cvxclustr.git	
+	R CMD build cvxclustr	
 	R CMD INSTALL cvxclustr_*.tar.gz
 
 ## Remarks
