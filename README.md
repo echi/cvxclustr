@@ -19,6 +19,8 @@ Two penalty norms are currently supported: 1-norm and 2-norm.
 
 You can install the stable version on [CRAN:] (http://cran.r-project.org/web/packages/cvxclustr/)
 
+	install.packages('cvxclustr', dependencies = TRUE)
+
 ## Remarks
 
 Details on the algorithms are in the paper [Splitting Methods for Convex Clustering] (http://arxiv.org/abs/1304.0499) by Chi and Lange.
