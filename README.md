@@ -24,10 +24,11 @@ You can install the stable version on [CRAN:] (http://cran.r-project.org/web/pac
 The developmental version can be pulled from github using the R package [devtools] (http://cran.r-project.org/web/packages/devtools/index.html)
 
 	install_github('cvxclustr','echi')
-
 or
 	git clone https://github.com/echi/cvxclustr.git	
+	
 	R CMD build cvxclustr	
+	
 	R CMD INSTALL cvxclustr_*.tar.gz
 
 ## Remarks
