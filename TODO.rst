@@ -1,0 +1,1 @@
+* Write Fortran for kernel_weights and knn_weights
