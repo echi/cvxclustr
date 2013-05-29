@@ -313,6 +313,20 @@ subroutine projectA(vector_in,n,vector_out,tau,type)
   call project(vector_in,n,vector_out,tau,type)
 end subroutine projectA
 
+subroutine kernel_weights(X,q,p,phi,w)
+  use constants
+  implicit none
+  integer :: i, j, k, q, p
+  real(kind=dble_prec) :: X(q,p), phi, w(p*(p-1)/2) 
+  k = 1
+  do i = 1,p-1
+     do j = i+1,p
+        w(k) = exp(-phi*sum( (X(:,i)-X(:,j))**2 ))
+        k = k + 1
+     end do
+  end do
+end subroutine kernel_weights
+
 module admm
   use constants
   implicit none
