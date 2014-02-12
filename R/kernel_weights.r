@@ -10,14 +10,14 @@
 #' @author Eric C. Chi, Kenneth Lange
 #' @export
 #' @return A vector \cite{w} of weights for convex clustering.
-kernel_weights = function(X,phi) {
-  p = ncol(X)
-  k = 1
-  w = matrix(0,p*(p-1)/2,1)
+kernel_weights <- function(X,phi) {
+  p <- ncol(X)
+  k <- 1
+  w <- matrix(0,p*(p-1)/2,1)
   for (i in 1:(p-1)) {
     for (j in (i+1):p) {
-      w[k] = exp(-phi*norm(as.matrix(X[,i,drop=FALSE]-X[,j,drop=FALSE]),'f')^2)
-      k = k+1
+      w[k] <- exp(-phi*norm(as.matrix(X[,i,drop=FALSE]-X[,j,drop=FALSE]),'f')**2)
+      k <- k+1
     }
   }
   return(weights=w)

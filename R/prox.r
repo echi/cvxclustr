@@ -12,12 +12,12 @@
 #' set.seed(12345)
 #' x = rnorm(10)
 #' prox(x,1)
-prox = function(x,tau,type=2) {
-  x = as.double(x)
-  tau = as.double(tau)
-  type = as.integer(type)
-  n = as.integer(length(x))
-  y = double(n)
-  sol=.Fortran("proxA",x=x,n=n,y=y,tau=tau,type=type)
+prox <- function(x,tau,type=2) {
+  x <- as.double(x)
+  tau <- as.double(tau)
+  type <- as.integer(type)
+  n <- as.integer(length(x))
+  y <- double(n)
+  sol <- .Fortran("proxA",x=x,n=n,y=y,tau=tau,type=type)
   return(sol$y)
 }
