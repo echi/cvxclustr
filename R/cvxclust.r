@@ -67,9 +67,9 @@ cvxclust = function(X,w,gamma,method="ama",nu=1,tol=1e-3,max_iter=1e4,type=2,acc
   if (!is.null(method) && !(method %in% c("ama","admm")))
     stop("method must be 'ama', 'admm', or NULL.")
   if (method == "ama") {
-    cvxclust_obj = cvxclust_path_ama(X,w,gamma,nu=nu,tol=tol,max_iter=max_iter,type=type,accelerate=accelerate)
+    cvxclust_obj <- cvxclust_path_ama(X,w,gamma,nu=nu,tol=tol,max_iter=max_iter,type=type,accelerate=accelerate)
   } else {
-    cvxclust_obj = cvxclust_path_admm(X,w,gamma,nu=nu,tol=tol,max_iter=max_iter,type=type,accelerate=accelerate)
+    cvxclust_obj <- cvxclust_path_admm(X,w,gamma,nu=nu,tol=tol,max_iter=max_iter,type=type,accelerate=accelerate)
   }
   return(cvxclust_obj)
 }

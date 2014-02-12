@@ -1,0 +1,44 @@
+\name{create_adjacency}
+\alias{create_adjacency}
+\title{Create adjacency matrix from V}
+\usage{
+  create_adjacency(V, ix, n)
+}
+\arguments{
+  \item{V}{Matrix of centroid differences}
+
+  \item{ix}{Key mapping centroid difference indices to node
+  pairs}
+
+  \item{n}{Number of points to cluster}
+}
+\description{
+  \code{create_adjacency} creates an n-by-n sparse
+  adjacency matrix from the matrix of centroid differences.
+}
+\examples{
+## Clusterpaths for Mammal Dentition
+data(mammals)
+X <- as.matrix(mammals[,-1])
+X <- t(scale(X,center=TRUE,scale=FALSE))
+p <- ncol(X)
+
+## Pick some weights and a sequence of regularization parameters.
+k <- 5
+phi <- 0.5
+w <- kernel_weights(X,phi)
+w <- knn_weights(w,k,p)
+gamma <- seq(0.0,43, length.out=100)
+
+## Perform clustering
+sol <- cvxclust(X, w, gamma, method = 'ama', accelerate = TRUE)
+
+## Construct adjacency matrix
+n <- ncol(X)
+nK <- n*(n-1)/2
+ix <- vec2tri(which(w > 0),p)
+A <- create_adjacency(sol$V[[10]],ix,n)
+G <- graph.adjacency(A, mode = 'upper')
+plot(G,vertex.label=as.character(mammals[,1]),vertex.label.cex=0.65,vertex.label.font=2,mark.groups=clist)
+}
+

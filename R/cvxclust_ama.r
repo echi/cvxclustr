@@ -34,47 +34,47 @@
 #' @export
 #' @author Eric C. Chi, Kenneth Lange
 #' @useDynLib cvxclustr
-cvxclust_ama = function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu=1,eta=2,type=2,max_iter=1e2,tol=1e-4,
+cvxclust_ama <- function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu=1,eta=2,type=2,max_iter=1e2,tol=1e-4,
                         accelerate=TRUE,backtrack=FALSE) {
-  q = as.integer(nrow(X))
-  p = as.integer(ncol(X))
+  q <- as.integer(nrow(X))
+  p <- as.integer(ncol(X))
   if (!is.null(type) && !(type %in% c(1,2)))
     stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
-#  if (nu >= 2/p) {
-#    warning("The stepsize nu may be too large. Setting it to 1.999/p.")
-#    nu = 1.999/p
-#  }
-  nK = as.integer(ncol(Lambda))
-  mix1 = as.integer(nrow(M1))
-  mix2 = as.integer(nrow(M2))
-  storage.mode(X) = "double"
-  storage.mode(Lambda) = "double"
-  U = matrix(0,q,p)
-  storage.mode(U) = "double"
-  V = matrix(0,q,nK)
-  storage.mode(V) = "double"
-  storage.mode(ix) = "integer"
-  storage.mode(M1) = "integer"
-  storage.mode(M2) = "integer"
-  s1 = as.integer(s1)
-  s2 = as.integer(s2)
-  w = as.double(w)
-  gamma = as.double(gamma)
-  nu = as.double(nu)
-  eta = as.double(eta)
-  type = as.integer(type)
-  max_iter = as.integer(max_iter)
-  tol = as.double(tol)
-  primal = double(max_iter)
-  dual = double(max_iter)
+  if (nu >= 2/p) {
+    warning("The stepsize nu may be too large. Setting it to 1.999/p.")
+    nu <- 1.999/p
+  }
+  nK <- as.integer(ncol(Lambda))
+  mix1 <- as.integer(nrow(M1))
+  mix2 <- as.integer(nrow(M2))
+  storage.mode(X) <- "double"
+  storage.mode(Lambda) <- "double"
+  U <- matrix(0,q,p)
+  storage.mode(U) <- "double"
+  V <- matrix(0,q,nK)
+  storage.mode(V) <- "double"
+  storage.mode(ix) <- "integer"
+  storage.mode(M1) <- "integer"
+  storage.mode(M2) <- "integer"
+  s1 <- as.integer(s1)
+  s2 <- as.integer(s2)
+  w <- as.double(w)
+  gamma <- as.double(gamma)
+  nu <- as.double(nu)
+  eta <- as.double(eta)
+  type <- as.integer(type)
+  max_iter <- as.integer(max_iter)
+  tol <- as.double(tol)
+  primal <- double(max_iter)
+  dual <- double(max_iter)
   if (accelerate) {
-    fxname = 'convex_cluster_ama_fista'
+    fxname <- 'convex_cluster_ama_fista'
     if (backtrack)
-      fxname = 'convex_cluster_ama_fista_backtrack'
+      fxname <- 'convex_cluster_ama_fista_backtrack'
   } else {
-    fxname = 'convex_cluster_ama'
+    fxname <- 'convex_cluster_ama'
   }  
-  sol = .Fortran(fxname,X=X,Lambda=Lambda,U=U,V=V,q=q,p=p,nK=nK,ix=ix,w=w,gamma=gamma,nu=nu,
+  sol <- .Fortran(fxname,X=X,Lambda=Lambda,U=U,V=V,q=q,p=p,nK=nK,ix=ix,w=w,gamma=gamma,nu=nu,
                  eta=eta,s1=s1,s2=s2,M1=M1,M2=M2,mix1=mix1,mix2=mix2,primal=primal,dual=dual,
                  max_iter=max_iter,iter=integer(1),tol=tol,type=type)
   return(list(U=sol$U,V=sol$V,Lambda=sol$Lambda,nu=sol$nu,

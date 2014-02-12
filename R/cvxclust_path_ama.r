@@ -63,34 +63,36 @@
 #' data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 #' data_plot + theme_bw()
 cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE,backtrack=FALSE) {
-  call = match.call()
-  nGamma = length(gamma)
-  p = ncol(X)
-  q = nrow(X)
-  edge_info = compactify_edges(w,p)
-  nK = length(which(w > 0))
-  Lambda = matrix(0,q,nK)
-  list_U = vector(mode="list",length=nGamma)
-  list_V = vector(mode="list",length=nGamma)
-  list_Lambda = vector(mode="list",length=nGamma)
-  ix = edge_info$ix  
-  M1 = edge_info$M1
-  M2 = edge_info$M2
-  s1 = edge_info$s1
-  s2 = edge_info$s2
-  iter_vec = integer(nGamma)
+  call <- match.call()
+  nGamma <- length(gamma)
+  p <- ncol(X)
+  q <- nrow(X)
+  edge_info <- compactify_edges(w,p)
+  nK <- length(which(w > 0))
+  Lambda <- matrix(0,q,nK)
+  list_U <- vector(mode="list",length=nGamma)
+  list_V <- vector(mode="list",length=nGamma)
+  list_Lambda <- vector(mode="list",length=nGamma)
+  list_cluster <- vector(mode="list",length=nGamma)
+  list_size <- vector(mode="list",length=nGamma)
+  ix <- edge_info$ix  
+  M1 <- edge_info$M1
+  M2 <- edge_info$M2
+  s1 <- edge_info$s1
+  s2 <- edge_info$s2
+  iter_vec <- integer(nGamma)
   print("gamma    its | primal obj       dual obj        gap      ")
   print("---------------------------------------------------------")  
   for (ig in 1:nGamma) {
-    gam = gamma[ig]
-    cc = cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=max_iter,tol=tol,type=type,
+    gam <- gamma[ig]
+    cc <- cvxclust_ama(X,Lambda,ix,M1,M2,s1,s2,w[w>0],gam,nu,max_iter=max_iter,tol=tol,type=type,
                       accelerate=accelerate,backtrack=backtrack)
-    iter_vec[ig] = cc$iter
-    nu = cc$nu
-    Lambda = cc$Lambda
-    list_U[[ig]] = cc$U
-    list_V[[ig]] = cc$V
-    list_Lambda[[ig]] = Lambda 
+    iter_vec[ig] <- cc$iter
+    nu <- cc$nu
+    Lambda <- cc$Lambda
+    list_U[[ig]] <- cc$U
+    list_V[[ig]] <- cc$V
+    list_Lambda[[ig]] <- Lambda 
     print(sprintf("%5d  %5d | %5f        %5f      %7f", ig, cc$iter, signif(cc$primal[cc$iter],4),
                   signif(cc$dual[cc$iter],4),
                   signif(cc$primal[cc$iter]-cc$dual[cc$iter],4)))
@@ -98,8 +100,11 @@ cvxclust_path_ama = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,acceler
     #          print('Single cluster')
     #          break
     #        }
+    cluster_info <- find_clusters(create_adjacency(V=cc$V,ix=ix,n=p))
+    list_cluster[[ig]] <- cluster_info$cluster
+    list_size[[ig]] <- cluster_info$size
   }
-  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,iters=iter_vec,call=call)
+  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,cluster=list_cluster,size=list_size,iters=iter_vec,call=call)
   class(cvxclust_obj) <- "cvxclustobject"
   return(cvxclust_obj)
 }

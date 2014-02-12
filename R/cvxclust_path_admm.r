@@ -60,19 +60,21 @@
 #' data_plot = data_plot + geom_point(data=X_data,aes(x=x,y=y),size=1.5)
 #' data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Component 2')
 #' data_plot + theme_bw()
-cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
-  call = match.call()
-  nGamma = length(gamma)
-  p = ncol(X)
-  q = nrow(X)
-  nK = p*(p-1)/2
-  Lambda = matrix(0,q,nK)
-  V = matrix(0,q,nK)
-  list_U = vector(mode="list",length=nGamma)
-  list_V = vector(mode="list",length=nGamma)
-  list_Lambda = vector(mode="list",length=nGamma)
-  ix = vec2tri(1:nK,p)  
-  iter_vec = integer(nGamma)  
+cvxclust_path_admm <- function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accelerate=TRUE) {
+  call <- match.call()
+  nGamma <- length(gamma)
+  p <- ncol(X)
+  q <- nrow(X)
+  nK <- p*(p-1)/2
+  Lambda <- matrix(0,q,nK)
+  V <- matrix(0,q,nK)
+  list_U <- vector(mode="list",length=nGamma)
+  list_V <- vector(mode="list",length=nGamma)
+  list_Lambda <- vector(mode="list",length=nGamma)
+  list_cluster <- vector(mode="list",length=nGamma)
+  list_size <- vector(mode="list",length=nGamma)
+  ix <- vec2tri(1:nK,p)  
+  iter_vec <- integer(nGamma)
   print("gamma    its | primal res      dual res      max res     ")
   print("---------------------------------------------------------")    
   for (ig in 1:nGamma) {
@@ -91,8 +93,11 @@ cvxclust_path_admm = function(X,w,gamma,nu=1,tol=1e-3,max_iter=1e4,type=2,accele
     #      print('Single cluster')
     #      break
     #    }
+    cluster_info <- find_clusters(create_adjacency(V=V,ix=ix,n=p))
+    list_cluster[[ig]] <- cluster_info$cluster
+    list_size[[ig]] <- cluster_info$size
   }
-  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,iters=iter_vec,call=call)
+  cvxclust_obj <- list(U=list_U,V=list_V,Lambda=list_Lambda,nGamma=ig,cluster=list_cluster,size=list_size,iters=iter_vec,call=call)
   class(cvxclust_obj) <- "cvxclustobject"
   return(cvxclust_obj)  
 }

@@ -22,33 +22,32 @@
 #' @export
 #' @author Eric C. Chi, Kenneth Lange
 #' @useDynLib cvxclustr
-cvxclust_admm = function(X,Lambda,V,ix,w,gamma,nu=1,type=2,max_iter=1e2,tol=1e-4,accelerate=TRUE) {
-
-  q = as.integer(nrow(X))
-  p = as.integer(ncol(X))
+cvxclust_admm <- function(X,Lambda,V,ix,w,gamma,nu=1,type=2,max_iter=1e2,tol=1e-4,accelerate=TRUE) {
+  q <- as.integer(nrow(X))
+  p <- as.integer(ncol(X))
   if (!is.null(type) && !(type %in% c(1,2)))
     stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
-  nK = as.integer(ncol(Lambda))
-  gamma = as.double(gamma)
-  max_iter = as.integer(max_iter)
-  tol = as.double(tol)
-  storage.mode(X) = "double"
-  w = as.double(w)
-  storage.mode(Lambda) = "double"
-  storage.mode(V) = "double"
-  storage.mode(ix) = "integer"
-  U = matrix(0,q,p)
-  storage.mode(U) = "double"
-  nu = as.double(nu)
-  type = as.integer(type)
-  primal = double(max_iter)
-  dual = double(max_iter)
+  nK <- as.integer(ncol(Lambda))
+  gamma <- as.double(gamma)
+  max_iter <- as.integer(max_iter)
+  tol <- as.double(tol)
+  storage.mode(X) <- "double"
+  w <- as.double(w)
+  storage.mode(Lambda) <- "double"
+  storage.mode(V) <- "double"
+  storage.mode(ix) <- "integer"
+  U <- matrix(0,q,p)
+  storage.mode(U) <- "double"
+  nu <- as.double(nu)
+  type <- as.integer(type)
+  primal <- double(max_iter)
+  dual <- double(max_iter)
   if (accelerate) {
-    fxname = 'convex_cluster_admm_acc'
+    fxname <- 'convex_cluster_admm_acc'
   } else {
-    fxname = 'convex_cluster_admm'
+    fxname <- 'convex_cluster_admm'
   }
-  sol = .Fortran(fxname,X=X,Lambda=Lambda,U=U,V=V,q=q,p=p,nK=nK,ix=ix,w=w,gamma=gamma,nu=nu,
+  sol <- .Fortran(fxname,X=X,Lambda=Lambda,U=U,V=V,q=q,p=p,nK=nK,ix=ix,w=w,gamma=gamma,nu=nu,
                  primal=primal,dual=dual,max_iter=max_iter,iter=integer(1),tol=tol,type=type)
   return(list(U=sol$U,V=sol$V,Lambda=sol$Lambda,nu=sol$nu,
               primal=sol$primal[1:sol$iter],dual=sol$dual[1:sol$iter],iter=sol$iter))
