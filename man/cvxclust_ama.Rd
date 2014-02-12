@@ -4,7 +4,7 @@
 \usage{
   cvxclust_ama(X, Lambda, ix, M1, M2, s1, s2, w, gamma,
     nu = 1, eta = 2, type = 2, max_iter = 100, tol = 1e-04,
-    accelerate = TRUE)
+    accelerate = TRUE, backtrack = FALSE)
 }
 \arguments{
   \item{X}{The q-by-p data matrix whose columns are to be
@@ -44,6 +44,9 @@
 
   \item{accelerate}{If \code{TRUE} (the default),
   acceleration is turned on.}
+
+  \item{backtrack}{If \code{TRUE} (the default),
+  backtracking is turned on.}
 }
 \value{
   \code{U} A list of centroid matrices.
@@ -71,6 +74,6 @@
   weights.} }
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 

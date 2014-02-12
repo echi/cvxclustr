@@ -22,6 +22,6 @@
   lth pair of nodes is (\code{i},\code{j}).
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 

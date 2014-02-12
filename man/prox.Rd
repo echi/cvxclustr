@@ -21,6 +21,6 @@ x = rnorm(10)
 prox(x,1)
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 

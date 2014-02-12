@@ -46,7 +46,7 @@
   regularization parameter sequence \code{gamma}. }
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 \references{
   Eric C. Chi, Kenneth Lange (2013). Splitting Methods for

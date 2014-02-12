@@ -43,6 +43,6 @@
   weights.} }
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 

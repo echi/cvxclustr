@@ -94,7 +94,7 @@ data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Componen
 data_plot + theme_bw()
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 \seealso{
   \code{\link{cvxclust_path_ama}} and

@@ -3,7 +3,8 @@
 \title{Convex Clustering Path via AMA}
 \usage{
   cvxclust_path_ama(X, w, gamma, nu = 1, tol = 0.001,
-    max_iter = 10000, type = 2, accelerate = TRUE)
+    max_iter = 10000, type = 2, accelerate = TRUE,
+    backtrack = FALSE)
 }
 \arguments{
   \item{X}{The data matrix to be clustered. The rows are
@@ -29,6 +30,9 @@
 
   \item{accelerate}{If \code{TRUE} (the default),
   acceleration is turned on.}
+
+  \item{backtrack}{If \code{TRUE} (the default),
+  backtracking is turned on.}
 }
 \value{
   \code{U} A list of centroid matrices.
@@ -90,7 +94,7 @@ data_plot = data_plot + xlab('Principal Component 1') + ylab('Principal Componen
 data_plot + theme_bw()
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 \seealso{
   \code{\link{cvxclust_path_admm}} for estimating the

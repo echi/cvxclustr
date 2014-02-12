@@ -23,6 +23,6 @@
   \code{k} nearest neighbors.
 }
 \author{
-  Eric C. Chi
+  Eric C. Chi, Kenneth Lange
 }
 
