@@ -40,10 +40,11 @@ cvxclust_ama <- function(X,Lambda,ix,M1,M2,s1,s2,w,gamma,nu=1,eta=2,type=2,max_i
   p <- as.integer(ncol(X))
   if (!is.null(type) && !(type %in% c(1,2)))
     stop("type must be 1, 2, or NULL. Only 1-norm and 2-norm penalties are currently supported.")
-  if (nu >= 2/p) {
-    warning("The stepsize nu may be too large. Setting it to 1.999/p.")
-    nu <- 1.999/p
-  }
+#  if (nu >= 2/p) {
+#    warning("The stepsize nu may be too large. Setting it to maximum of 1.999/p and 1.999/AnM.")
+#    Lipschitz <- min(AnM(w,p),p)
+#    nu <- 1.999/Lipschitz
+#  }
   nK <- as.integer(ncol(Lambda))
   mix1 <- as.integer(nrow(M1))
   mix2 <- as.integer(nrow(M2))

@@ -15,17 +15,3 @@ Suggests:
     testthat,
     roxygen2,
     ggplot2
-Collate:
-    'cvxclustr-package.r'
-    'prox.r'
-    'cvxclust_admm.r'
-    'cvxclust_path_admm.r'
-    'util.r'
-    'kernel_weights.r'
-    'knn_weights.r'
-    'cvxclust_ama.r'
-    'cvxclust_path_ama.r'
-    'cvxclust.r'
-    'mammals.r'
-    'create_adjacency.r'
-    'find_clusters.r'
